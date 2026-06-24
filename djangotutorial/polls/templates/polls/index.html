@@ -1,6 +1,8 @@
-{% load static %}
-
-<link rel="stylesheet" href="{% static 'polls/style.css' %}">
+{% if user.is_authenticated %}
+    <p>Logged in as {{ user.username }} | <a href="{% url 'polls:logout' %}">Logout</a></p>
+{% else %}
+    <p><a href="{% url 'polls:login' %}">Login</a> | <a href="{% url 'polls:register' %}">Register</a></p>
+{% endif %}
 
 {% if latest_question_list %}
     <ul>
