@@ -1,0 +1,18 @@
+<h1>Search Polls</h1>
+
+<form method="get">
+    <input type="text" name="q" value="{{ query }}">
+    <button type="submit">Search</button>
+</form>
+
+{% if questions %}
+    <ul>
+    {% for question in questions %}
+        <li>{{ question.1 }}</li>
+    {% endfor %}
+    </ul>
+{% elif query %}
+    <p>No results found.</p>
+{% endif %}
+
+<p><a href="{% url 'polls:index' %}">Back to polls</a></p>

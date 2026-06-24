@@ -1,4 +1,5 @@
 from django.db.models import F
+from django.db import connection
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
@@ -77,3 +78,20 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect("polls:index")
+
+
+# FLAW 1:
+@login_required
+def search(request):
+    query = request.GET.get("q", "")
+    questions = []
+    if query:
+        cursor = connection.cursor()
+        cursor.execute(
+            f"SELECT * FROM polls_question WHERE question_text LIKE '%%{query}%%'"
+        )
+        questions = cursor.fetchall()
+    # FIX 1:
+    # if query:
+    #     questions = Question.objects.filter(question_text__icontains=query)
+    return render(request, "polls/search.html", {"questions": questions, "query": query})
