@@ -91,7 +91,22 @@ def search(request):
             f"SELECT * FROM polls_question WHERE question_text LIKE '%%{query}%%'"
         )
         questions = cursor.fetchall()
-    # FIX 1:
+    # FIX 1: Uncomment the following and replace the block above:
     # if query:
     #     questions = Question.objects.filter(question_text__icontains=query)
     return render(request, "polls/search.html", {"questions": questions, "query": query})
+
+
+# FLAW 2:
+@login_required
+def delete_question(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    question.delete()
+    return render(request, "polls/delete_success.html", {"question_text": question.question_text})
+# FIX 2: Uncomment the following and replace the block above:
+# from django.contrib.admin.views.decorators import staff_member_required
+# @staff_member_required
+# def delete_question(request, question_id):
+#     question = get_object_or_404(Question, pk=question_id)
+#     question.delete()
+#     return render(request, "polls/delete_success.html", {"question_text": question.question_text})
