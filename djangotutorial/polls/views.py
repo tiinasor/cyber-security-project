@@ -57,6 +57,17 @@ def register_view(request):
         if username and password:
             if User.objects.filter(username=username).exists():
                 return render(request, "polls/register.html", {"error": "Username already taken."})
+            # FLAW 3:
+            password_is_valid = True
+            # FIX 3: Uncomment the following and replace the line above
+            # from django.contrib.auth.password_validation import validate_password
+            # from django.core.exceptions import ValidationError
+            # try:
+            #     validate_password(password)
+            #     password_is_valid = True
+            # except ValidationError as e:
+            #     password_is_valid = False
+            #     return render(request, "polls/register.html", {"error": " ".join(e.messages)})
             User.objects.create_user(username=username, password=password)
             user = authenticate(request, username=username, password=password)
             login(request, user)
@@ -91,7 +102,7 @@ def search(request):
             f"SELECT * FROM polls_question WHERE question_text LIKE '%%{query}%%'"
         )
         questions = cursor.fetchall()
-    # FIX 1: Uncomment the following and replace the block above:
+    # FIX 1: Uncomment the following and replace the block above
     # if query:
     #     questions = Question.objects.filter(question_text__icontains=query)
     return render(request, "polls/search.html", {"questions": questions, "query": query})
@@ -103,7 +114,7 @@ def delete_question(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     question.delete()
     return render(request, "polls/delete_success.html", {"question_text": question.question_text})
-# FIX 2: Uncomment the following and replace the block above:
+# FIX 2: Uncomment the following and replace the block above
 # from django.contrib.admin.views.decorators import staff_member_required
 # @staff_member_required
 # def delete_question(request, question_id):
