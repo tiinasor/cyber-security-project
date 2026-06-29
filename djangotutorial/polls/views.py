@@ -9,6 +9,9 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+import logging
+
+logger = logging.getLogger(__name__)
 
 from .models import Choice, Question
 
@@ -83,6 +86,9 @@ def login_view(request):
         if user:
             login(request, user)
             return redirect("polls:index")
+        # FLAW 5: Failed login attempts are not logged
+        # FIX 5: Uncomment the following line
+        # logger.warning(f"Failed login attempt for user: {username}")
     return render(request, "polls/login.html")
 
 
